@@ -1,0 +1,3 @@
+---
+- include_tasks: apt_update_upgrade.yml
+  when: "task_type in ['all', 'apt-update-upgrade']"

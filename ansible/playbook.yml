@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: common
+      vars:
+        task_type: apt-update-upgrade
+
+- hosts: kube_masters
+  become: true
+  roles:
+    - role: kubeadm
+      vars:
+        task_type: install
+
+- hosts: kube_workers
+  become: true
+  roles:
+    - role: kubeadm
+      vars:
+        task_type: install
+
+- hosts: user
+  become: true
+  roles: []

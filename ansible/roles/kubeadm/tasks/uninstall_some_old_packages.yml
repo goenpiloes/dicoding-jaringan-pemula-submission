@@ -1,0 +1,27 @@
+---
+- name: "check if we need to uninstall old package first: {{ item }}"
+  shell: |
+    apt-get -V -s upgrade {{ item }} | cat
+  ignore_errors: false
+  register: check_old_package
+# - debug:
+#     var: check_old_package.stdout_lines
+
+- block:
+    - name: "uninstall old version of the package: {{ item }}"
+      apt:
+        force_apt_get: true
+        name: "{{ item }}"
+        state: absent
+
+    - name: clean up files of containerd
+      shell: |
+        rm -rf /var/lib/containerd
+      ignore_errors: false
+      when: "{{ item }} is 'containerd'"
+    - name: clean up files of docker
+      shell: |
+        rm -rf /var/lib/docker
+      ignore_errors: false
+      when: "{{ item }} in ['docker', 'docker-engine', 'docker.io']"
+  when: check_old_package.stdout | regex_search("^[^0].* upgraded")

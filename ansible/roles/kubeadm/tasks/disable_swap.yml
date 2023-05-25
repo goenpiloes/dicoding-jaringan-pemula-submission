@@ -1,0 +1,13 @@
+---
+- name: check swap info
+  shell: |
+    free -m | grep Swap
+  ignore_errors: false
+  register: swap_info
+- debug:
+    var: swap_info.stdout_lines
+
+- name: disable swap
+  shell: |
+    swapoff -a
+  when: swap_info.stdout | regex_search("^Swap:\s*[1-9].*")

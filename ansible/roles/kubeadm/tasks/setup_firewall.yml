@@ -1,0 +1,22 @@
+---
+- name: get firewall status
+  shell: |
+    ufw status | grep Status
+  register: ufw_status
+- debug:
+    var: ufw_status.stdout_lines
+  
+- block:
+    - name: add ufw rules to allow some required ports
+      shell: |
+        ufw allow {{ item }}/tcp
+      loop: "{{ allowed_ports }}"
+    - name: reload ufw and look into ufw rule table
+      shell: |
+        ufw reload
+        echo "firewall has been reloaded"
+        ufw show added
+      register: general_output
+    - debug:
+        var: general_output.stdout_lines
+  when: ufw_status.stdout | regex_search("^Status:\sactive")

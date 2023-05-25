@@ -1,0 +1,109 @@
+---
+- include_tasks: disable_swap.yml
+  when: "task_type in ['all', 'install', 'disable-swap']"
+
+- include_tasks: setup_firewall.yml
+  when: "task_type in ['all', 'install', 'setup-firewall']"
+
+- block:
+    - include_tasks: uninstall_some_old_packages.yml
+      loop: "{{ old_packages }}"
+    
+    - include_tasks: install_docker.yml
+
+    # - include_tasks: config_br_netfilter_and_overlay.yml
+
+#     - name: update and install apt packages before install kubeadm and kubectl
+#       apt:
+#         update_cache: true
+#         force_apt_get: true
+#         name: "{{ pre_packages_before_kubeadm }}"
+#         state: present
+    
+#     - name: check if kubernetes's official GPG key has existed
+#       shell: |
+#         ls -la /etc/apt/keyrings | grep kubernetes-keyring.gpg | cat
+#       ignore_errors: false
+#       register: key_existence
+#     - debug:
+#         var: key_existence.stdout_lines
+
+#     - block:
+#         - name: download google cloud public signing key
+#           shell: |
+#             curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /etc/apt/keyrings/kubernetes-keyring.gpg
+#             chmod a+r /etc/apt/keyrings/kubernetes-keyring.gpg
+#           ignore_errors: false
+#           register: general_output
+#         - debug:
+#             var: general_output.stdout_lines
+        
+#         - name: add kubernetes apt repository
+#           shell: |
+#             echo "deb [signed-by=/etc/apt/keyrings/kubernetes-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+#           ignore_errors: false
+#           register: general_output
+#         - debug:
+#             var: general_output.stdout_lines
+#       when: key_existence.stdout == ""
+    
+#     - name: update apt packages and install kubelet and kubeadm then pin their version
+#       shell: |
+#         apt-get update
+#         # apt-get install -y kubelet kubeadm kubectl
+#         # apt-mark hold kubelet kubeadm kubectl
+#         apt-get install -y kubelet kubeadm
+#         apt-mark hold kubelet kubeadm
+#       ignore_errors: false
+#       register: general_output
+#     - debug:
+#         var: general_output.stdout_lines
+    
+#     - name: check kubelet, kubeadm, and kubectl versions
+#       shell: |
+#         kubelet version | cat
+#         kubeadm version | cat
+#         # kubectl --version | cat
+#       ignore_errors: false
+#       register: general_output
+#     - debug:
+#         var: general_output.stdout_lines
+
+#     - name: check if container configuration disable docker-buildx-plugin
+#       shell: |
+#         cat /etc/containerd/config.toml | grep disabled_plugins | cat
+#       ignore_errors: false
+#       register: check_config
+#     - debug:
+#         var: check_config.stdout_lines
+    
+#     - block:
+#         - name: remove cri from list of disabled_plugins
+#           replace:
+#             path: /etc/containerd/config.toml
+#             after: 'disabled_plugins = \['
+#             before: '\]'
+#             regexp: '[, ]*"cri"'
+#             replace: ''
+#             backup: true
+#         - name: check list of disabled_plugins after being modified
+#           shell: |
+#             cat /etc/containerd/config.toml | grep disabled_plugins | cat
+#           ignore_errors: false
+#           register: general_output
+#         - debug:
+#             var: general_output.stdout_lines
+#       when: check_config.stdout | regex_search(".*cri.*")
+  when: "task_type in ['all', 'install']"
+
+# - block:
+#     - name: init kubeadm cluster
+#       shell: |
+#         kubeadm init \
+#         --pod-network-cidr {{ network_cidr }} \
+#         --control-plane-endpoint {{ control_plane_endpoint }}
+#       ignore_errors: false
+#       register: general_output
+#     - debug:
+#         var: general_output.stdout_lines
+#   when: "task_type in ['all', 'init']"

@@ -1,0 +1,36 @@
+---
+old_packages:
+  - docker
+  - docker-engine
+  - docker.io
+  - containerd
+  - runc
+
+pre_packages_before_docker:
+  - ca-certificates
+  - curl
+  - gnupg
+
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+
+pre_packages_before_kubeadm:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+
+allowed_ports:
+  - 22
+  - 80
+  - 443
+  - 1022
+  - 6443
+  - 2379
+  - 2380
+  - 10250
+  - 10257
+  - 10259
