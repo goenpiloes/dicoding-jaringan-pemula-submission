@@ -1,0 +1,7 @@
+---
+pre_packages_before_nginx:
+  - ca-certificates
+  - curl
+  - gnupg2
+  - lsb-release
+  - debian-archive-keyring

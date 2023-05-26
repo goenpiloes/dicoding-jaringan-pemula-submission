@@ -1,0 +1,13 @@
+---
+- name: Check if repo exists
+  shell: ls | grep {{ resource_repository | split('/') | last | split('.git') | first }} | cat
+  ignore_errors: false
+  register: repo_existence
+
+- name: Clone submission resource repository
+  shell: "git clone {{ resource_repository }}"
+  when: repo_existence.stdout == ""
+
+- name: Show directory tree of the repo
+  shell: tree {{ resource_repository | split('/') | last | split('.git') | first }}/
+  ignore_errors: false

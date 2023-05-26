@@ -1,3 +1,4 @@
 ---
-- include_tasks: apt_update_upgrade.yml
-  when: "task_type in ['all', 'apt-update-upgrade']"
+- name: Include tasks from apt_update_upgrade.yml
+  include_tasks: apt_update_upgrade.yml
+  when: "task_types | intersect(['all', 'apt-update-upgrade']) | length > 0"

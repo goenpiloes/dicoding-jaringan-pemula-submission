@@ -1,0 +1,37 @@
+---
+- name: Install some apt-get packages before installing nginx
+  apt:
+    update_cache: true
+    force_apt_get: true
+    name: "{{ pre_packages_before_nginx }}"
+    state: present
+
+- name: Check if nginx's official GPG key has existed
+  shell: |
+    ls -la /usr/share/keyrings | grep nginx-archive-keyring.gpg | cat
+  ignore_errors: false
+  register: key_existence
+
+- name: Add nginx's official GPG key
+  shell: |
+    curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gpg
+    chmod a+r /usr/share/keyrings/nginx-archive-keyring.gpg
+  ignore_errors: false
+  when: key_existence.stdout == ""
+      
+- name: Setup nginx repository
+  shell: |
+    OS=$(lsb_release -is | tr '[:upper:]' '[:lower:]') 
+    RELEASE=$(lsb_release -cs)
+    echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+    http://nginx.org/packages/${OS} ${RELEASE} nginx" \
+    | tee /etc/apt/sources.list.d/nginx.list
+  ignore_errors: false
+  when: key_existence.stdout == "" 
+
+- name: Install nginx
+  apt:
+    update_cache: true
+    force_apt_get: true
+    name: nginx
+    state: present

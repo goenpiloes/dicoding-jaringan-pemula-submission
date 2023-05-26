@@ -1,25 +1,19 @@
 ---
-- hosts: all
+- name: Main playbook start...
+  hosts: server
   become: true
-  roles:
-    - role: common
-      vars:
-        task_type: apt-update-upgrade
 
-- hosts: kube_masters
-  become: true
-  roles:
-    - role: kubeadm
-      vars:
-        task_type: install
+  tasks:
+    - name: Run some tasks from role common
+      include_role:
+        name: common
+        tasks_from: "{{ item }}"
+      loop:
+        - apt_update_upgrade.yml
 
-- hosts: kube_workers
-  become: true
-  roles:
-    - role: kubeadm
-      vars:
-        task_type: install
-
-- hosts: user
-  become: true
-  roles: []
+    - name: Run some tasks from role nginx
+      include_role:
+        name: nginx
+        tasks_from: "{{ item }}"
+      loop:
+        - install.yml

@@ -1,0 +1,4 @@
+---
+- name: Run some tasks from install.yml
+  include_tasks: install.yml
+  when: "task_types | intersect(['all', 'install']) | length > 0"
