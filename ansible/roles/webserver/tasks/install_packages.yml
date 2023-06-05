@@ -1,16 +1,16 @@
 ---
 - name: Check if nodejs and npm has been installed
-  shell: node
+  shell: node --version | cat
   ignore_errors: false
   register: check_node
 
 - name: Setup NodeJS LTS repository
   shell: curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-  when: check_node.stdout | regex_search("'node' not found", multiline=True)
+  when: check_node.stdout | regex_search("not found", multiline=True)
 
 - name: Install useful apt packages
   apt:
     update_cache: true
-    force_apt_get: true
+    # force_apt_get: true
     name: "{{ useful_packages }}"
     state: present

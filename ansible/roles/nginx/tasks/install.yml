@@ -18,20 +18,20 @@
     chmod a+r /usr/share/keyrings/nginx-archive-keyring.gpg
   ignore_errors: false
   when: key_existence.stdout == ""
-      
+
 - name: Setup nginx repository
   shell: |
-    OS=$(lsb_release -is | tr '[:upper:]' '[:lower:]') 
+    OS=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
     RELEASE=$(lsb_release -cs)
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
     http://nginx.org/packages/${OS} ${RELEASE} nginx" \
     | tee /etc/apt/sources.list.d/nginx.list
   ignore_errors: false
-  when: key_existence.stdout == "" 
+  when: key_existence.stdout == ""
 
 - name: Install nginx
   apt:
     update_cache: true
-    force_apt_get: true
+    # force_apt_get: true
     name: nginx
     state: present

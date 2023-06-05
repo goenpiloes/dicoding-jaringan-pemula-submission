@@ -2,10 +2,10 @@
 - name: Update apt-get packages
   apt:
     update_cache: true
-    force_apt_get: true
+    # force_apt_get: true
     cache_valid_time: 3600
 
 - name: Upgrade apt-get packages
   apt:
     upgrade: dist
-    force_apt_get: true
+    # force_apt_get: true

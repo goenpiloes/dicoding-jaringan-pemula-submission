@@ -3,5 +3,6 @@ useful_packages:
   - build-essential
   - tree
   - nodejs
+  - npm
 
 resource_repository: https://github.com/dicodingacademy/a387-jarkom-labs.git

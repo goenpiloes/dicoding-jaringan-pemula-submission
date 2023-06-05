@@ -17,3 +17,13 @@
         tasks_from: "{{ item }}"
       loop:
         - install.yml
+        - run.yml
+
+    - name: Run some tasks from role webserver
+      include_role:
+        name: webserver
+        tasks_from: "{{ item }}"
+      loop:
+        - install_packages.yml
+        - clone_repo.yml
+        - run.yml
