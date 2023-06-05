@@ -8,5 +8,13 @@
     ci: true
     path: "/home/{{ ansible_user }}/{{ repo_name }}"
 
-- name: run node app
-  
+- name: Run node app
+  shell: "cd /home/{{ ansible_user }}/{{ repo_name }} && npm run start"
+  async: 1000
+  poll: 0
+
+- name: Ensure app is running
+  shell: ps aux | grep npm
+  register: app_status
+
+- debug: msg="{{ app_status.stdout_lines }}"

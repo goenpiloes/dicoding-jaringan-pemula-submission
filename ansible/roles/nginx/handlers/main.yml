@@ -1,6 +1,8 @@
 ---
-- name: Reload nginx
+- name: Reload-nginx
   service:
     name: nginx
     state: reloaded
     enabled: true
+  tags: 
+    - always

@@ -9,5 +9,8 @@
   when: repo_existence.stdout == ""
 
 - name: Show directory tree of the repo
-  shell: tree {{ resource_repository | split('/') | last | split('.git') | first }}/
+  shell: "tree {{ resource_repository | split('/') | last | split('.git') | first }}"
   ignore_errors: false
+  register: tree_output
+
+- debug: msg="{{ tree_output.stdout_lines }}"

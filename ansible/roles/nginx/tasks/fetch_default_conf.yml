@@ -1,0 +1,6 @@
+---
+- name: Fetch nginx config
+  fetch:
+    src: /etc/nginx/conf.d/default.conf
+    dest: "{{ role_path }}/files/"
+    flat: true

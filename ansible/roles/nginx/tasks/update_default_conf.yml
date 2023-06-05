@@ -1,0 +1,8 @@
+---
+- name: Update default conf of nginx (/etc/nginx/conf.d/default.conf)
+  copy:
+    src: default_update.conf
+    dest: /etc/nginx/conf.d/default.conf
+  notify: Reload-nginx
+  tags: 
+    - update

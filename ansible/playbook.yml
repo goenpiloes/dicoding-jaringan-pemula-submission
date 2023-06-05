@@ -18,6 +18,16 @@
       loop:
         - install.yml
         - run.yml
+        - fetch_default_conf.yml
+
+    - name: Run tag update
+      include_role:
+        name: nginx
+        tasks_from: "{{ item }}"
+      loop:
+        - update_default_conf.yml
+      tags:
+        - update
 
     - name: Run some tasks from role webserver
       include_role:
