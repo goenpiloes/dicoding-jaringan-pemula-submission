@@ -1,1 +1,12 @@
 ---
+- name: Get repo name
+  set_fact: 
+    repo_name: "{{ resource_repository | split('/') | last | split('.git') | first }}"
+
+- name: Install npm packages
+  npm:
+    ci: true
+    path: "/home/{{ ansible_user }}/{{ repo_name }}"
+
+- name: run node app
+  
