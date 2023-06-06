@@ -1,3 +1,5 @@
+*/**/.DS_Store
 vm/data/.ssh
 vm/.vagrant
+.DS_Store
 .vscode
